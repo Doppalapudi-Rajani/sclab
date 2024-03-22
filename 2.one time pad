@@ -1,56 +1,31 @@
 import java.util.Scanner;
-public class OneTimePad {
+public class VernamCipher {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
         System.out.print("Enter plaintext: ");
-        String plaintext = scanner.nextLine().toUpperCase();
-        System.out.print("Enter key (ASCII or numerical): ");
-        String keyInput = scanner.nextLine();
-        int[] key = convertInputToNumerical(keyInput);
-        int[] numericalPlaintext = convertStringToNumerical(plaintext);
-        if (numericalPlaintext.length != key.length) {
-            System.out.println("Error: The length of the key must be the same as the length of the plaintext.");
+        String pt = sc.nextLine();
+        System.out.print("Enter key: ");
+        String key = sc.nextLine();
+        if (pt.length() != key.length()) {
+            System.out.println("Key length must be equal to plaintext length");
             return;
         }
-        int[] numericalCiphertext = new int[plaintext.length()];
-        for (int i = 0; i < plaintext.length(); i++) {
-            numericalCiphertext[i] = (numericalPlaintext[i] + key[i]) % 26;
+        StringBuilder ct = new StringBuilder();
+        for (int i = 0; i < pt.length(); i++) {
+            char ec = (char)(pt.charAt(i) ^ key.charAt(i));
+            ct.append(ec);
         }
-        System.out.println("Numerical Plaintext (Binary): " + arrayToBinaryString(numericalPlaintext));
-        System.out.println("Numerical Key (Binary): " + arrayToBinaryString(key));
-        System.out.println("Numerical Ciphertext (Binary): " + arrayToBinaryString(numericalCiphertext));
-        System.out.println("Ciphertext (ASCII): " + arrayToASCIIString(numericalCiphertext));
-    }
-    private static int[] convertInputToNumerical(String input) {
-        int[] result = new int[input.length()];
-        for (int i = 0; i < input.length(); i++) {
-            try {
-                result[i] = Integer.parseInt(String.valueOf(input.charAt(i)));
-            } catch (NumberFormatException e) {
-                result[i] = input.charAt(i) - 'A';
-            }
+        System.out.print("Encrypted text (raw): ");
+for (int i = 0; i < ct.length(); i++) {
+    System.out.print(Integer.toBinaryString((int)ct.charAt(i)) + " ");
+}
+System.out.println(); 
+        //System.out.println("Encrypted text: " + ct.toString());
+        StringBuilder dt = new StringBuilder();
+        for (int i = 0; i < ct.length(); i++) {
+            char dc = (char) (ct.charAt(i) ^ key.charAt(i));
+            dt.append(dc);
         }
-        return result;
-    }
-    private static int[] convertStringToNumerical(String input) {
-        int[] result = new int[input.length()];
-        for (int i = 0; i < input.length(); i++) {
-            result[i] = input.charAt(i) - 'A';
-        }
-        return result;
-    }
-    private static String arrayToBinaryString(int[] array) {
-        StringBuilder sb = new StringBuilder();
-        for (int num : array) {
-            sb.append(Integer.toBinaryString(num)).append(" ");
-        }
-        return sb.toString().trim();
-    }
-    private static String arrayToASCIIString(int[] array) {
-        StringBuilder sb = new StringBuilder();
-        for (int num : array) {
-            sb.append((char) (num + 'A'));
-        }
-        return sb.toString();
+        System.out.println("Decrypted text: " + dt.toString());
     }
 }
